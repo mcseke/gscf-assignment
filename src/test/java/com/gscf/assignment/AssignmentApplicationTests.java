@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -43,14 +42,14 @@ class AssignmentApplicationTests {
 	@Test
 	void testListCubicShapedRoomsOrderedByWallpaperNeededDesc() {
 		List<Room> cubicShapedRoomsOrderedByWallpaperNeededDesc = wallpaperCalculator.listCubicShapedRoomsOrderedByWallpaperNeededDesc();
-		Assertions.assertTrue(cubicShapedRoomsOrderedByWallpaperNeededDesc.size() == 1);
+		Assertions.assertEquals(1, cubicShapedRoomsOrderedByWallpaperNeededDesc.size());
 		Assertions.assertEquals(new Room(1,1,1), cubicShapedRoomsOrderedByWallpaperNeededDesc.get(0));
 	}
 
 	@Test
 	void testListRoomsAppearingMoreThenOnce() {
-		Arrays.asList(new Room(3,8,9));
-		Assertions.assertTrue(wallpaperCalculator.listRoomsAppearingMoreThenOnce().size() == 1);
+		List<Room> listRoomsAppearingMoreThenOnce = wallpaperCalculator.listRoomsAppearingMoreThenOnce();
+		Assertions.assertEquals(1, listRoomsAppearingMoreThenOnce.size());
 		Assertions.assertEquals(new Room(3,8,9), wallpaperCalculator.listRoomsAppearingMoreThenOnce().get(0));
 	}
 
