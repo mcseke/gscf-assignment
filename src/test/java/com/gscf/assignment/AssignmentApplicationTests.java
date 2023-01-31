@@ -20,11 +20,11 @@ class AssignmentApplicationTests {
 	private ConfigurationProperties configurationProperties;
 
 	@InjectMocks
-	WallpaperCalculator wallpaperCalculator;
+	private WallpaperCalculator wallpaperCalculator;
 
 
 	@BeforeEach
-	public void initMocks() {
+	void initMocks() {
 		Mockito.when(configurationProperties.getInputFileName()).thenReturn("/sample-input-test.txt");
 	}
 
