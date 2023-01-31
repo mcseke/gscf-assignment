@@ -3,6 +3,8 @@ package com.gscf.assignment.components;
 import com.gscf.assignment.config.ConfigurationProperties;
 import com.gscf.assignment.model.Room;
 import jakarta.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.ClassPathResource;
@@ -15,10 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Component
 @EnableConfigurationProperties(ConfigurationProperties.class)
 public class WallpaperCalculator {
+
+    private Logger logger = LogManager.getLogger(WallpaperCalculator.class);
 
     @Autowired
     private ConfigurationProperties configurationProperties;
@@ -26,7 +31,10 @@ public class WallpaperCalculator {
     @PostConstruct
     public void init() {
         Long wallpaperNeeded = calculateWallpaperNeeded();
-        System.out.println(wallpaperNeeded);
+        logger.info(String.format("Number of total square feet of wallpaper: %s", wallpaperNeeded));
+
+        List<Room> rooms = listCubicShapedRoomsOrderedByWallpaperNeededDesc();
+        logger.info(String.format("All rooms from input that have a cubic shape (order by total needed wallpaper descending): %s", rooms));
     }
 
     private List<Room> readRoomsFromFile() {
@@ -56,12 +64,20 @@ public class WallpaperCalculator {
         List<Room> rooms = readRoomsFromFile();
 
         AtomicReference<Long> wallpaperNeeded = new AtomicReference<>(0L);
-        rooms.stream().forEach((room) -> {
-            wallpaperNeeded.updateAndGet(v -> v + room.wallpaperNeeded());
-        });
+        rooms.forEach((room) ->
+            wallpaperNeeded.updateAndGet(v -> v + room.wallpaperNeeded())
+        );
         return wallpaperNeeded.get();
 
     }
 
-
+    public List<Room> listCubicShapedRoomsOrderedByWallpaperNeededDesc() {
+        List<Room> rooms = readRoomsFromFile();
+        return rooms.stream()
+            .filter(room ->
+                room.getHeight().equals(room.getLength()) && room.getHeight().equals(room.getWidth())
+            ).sorted((o1, o2) ->
+                Long.compare(o2.wallpaperNeeded(), o1.wallpaperNeeded())
+            ).collect(Collectors.toList());
+    }
 }

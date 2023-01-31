@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AssignmentApplication {
-    @Autowired
-    WallpaperCalculator wallpaperCalculator;
 
     public static void main(String[] args) {
         SpringApplication.run(AssignmentApplication.class, args);

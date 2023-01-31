@@ -1,5 +1,8 @@
 package com.gscf.assignment.model;
 
+import lombok.Data;
+
+@Data
 public class Room {
     private Integer length;
     private Integer width;
