@@ -1,0 +1,16 @@
+### Mac ###
+.DS_Store
+
+### Git ###
+*.orig
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Maven ###
+work/
+target/
+classes/
