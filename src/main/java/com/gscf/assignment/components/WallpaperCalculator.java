@@ -26,8 +26,12 @@ public class WallpaperCalculator {
 
     private final Logger logger = LogManager.getLogger(WallpaperCalculator.class);
 
-    @Autowired
     private ConfigurationProperties configurationProperties;
+
+    @Autowired
+    WallpaperCalculator(ConfigurationProperties configurationProperties) {
+        this.configurationProperties = configurationProperties;
+    }
 
     @PostConstruct
     public void init() {
