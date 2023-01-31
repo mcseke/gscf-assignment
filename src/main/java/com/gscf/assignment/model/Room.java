@@ -2,6 +2,8 @@ package com.gscf.assignment.model;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class Room {
     private Integer length;
@@ -29,5 +31,18 @@ public class Room {
                 ", width=" + width +
                 ", height=" + height +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return length.equals(room.length) && width.equals(room.width) && height.equals(room.height);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(length, width, height);
     }
 }

@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties(ConfigurationProperties.class)
 public class WallpaperCalculator {
 
-    private Logger logger = LogManager.getLogger(WallpaperCalculator.class);
+    private final Logger logger = LogManager.getLogger(WallpaperCalculator.class);
 
     @Autowired
     private ConfigurationProperties configurationProperties;
@@ -35,6 +36,9 @@ public class WallpaperCalculator {
 
         List<Room> rooms = listCubicShapedRoomsOrderedByWallpaperNeededDesc();
         logger.info(String.format("All rooms from input that have a cubic shape (order by total needed wallpaper descending): %s", rooms));
+
+        List<Room> roomsAppearingMoreThenOnce = listRoomsAppearingMoreThenOnce();
+        logger.info(String.format("Rooms from input that are appearing more than once (order is irrelevant): %s", roomsAppearingMoreThenOnce));
     }
 
     private List<Room> readRoomsFromFile() {
@@ -65,7 +69,7 @@ public class WallpaperCalculator {
 
         AtomicReference<Long> wallpaperNeeded = new AtomicReference<>(0L);
         rooms.forEach((room) ->
-            wallpaperNeeded.updateAndGet(v -> v + room.wallpaperNeeded())
+                wallpaperNeeded.updateAndGet(v -> v + room.wallpaperNeeded())
         );
         return wallpaperNeeded.get();
 
@@ -74,10 +78,16 @@ public class WallpaperCalculator {
     public List<Room> listCubicShapedRoomsOrderedByWallpaperNeededDesc() {
         List<Room> rooms = readRoomsFromFile();
         return rooms.stream()
-            .filter(room ->
-                room.getHeight().equals(room.getLength()) && room.getHeight().equals(room.getWidth())
-            ).sorted((o1, o2) ->
-                Long.compare(o2.wallpaperNeeded(), o1.wallpaperNeeded())
-            ).collect(Collectors.toList());
+                .filter(room ->
+                        room.getHeight().equals(room.getLength()) && room.getHeight().equals(room.getWidth())
+                ).sorted((o1, o2) ->
+                        Long.compare(o2.wallpaperNeeded(), o1.wallpaperNeeded())
+                ).collect(Collectors.toList());
+    }
+
+    public List<Room> listRoomsAppearingMoreThenOnce() {
+        List<Room> rooms = readRoomsFromFile();
+        Map<Room, Long> roomsToOccuranceMapping = rooms.stream().collect(Collectors.groupingBy(room -> room, Collectors.counting()));
+        return roomsToOccuranceMapping.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey()).collect(Collectors.toList());
     }
 }
