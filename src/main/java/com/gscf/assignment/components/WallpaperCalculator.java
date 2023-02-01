@@ -1,8 +1,8 @@
 package com.gscf.assignment.components;
 
+import com.gscf.assignment.AssignmentApplication;
 import com.gscf.assignment.config.ConfigurationProperties;
 import com.gscf.assignment.model.Room;
-import jakarta.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,26 +23,13 @@ import java.util.stream.Collectors;
 @Component
 @EnableConfigurationProperties(ConfigurationProperties.class)
 public class WallpaperCalculator {
+    private static final Logger logger = LogManager.getLogger(WallpaperCalculator.class);
 
-    private final Logger logger = LogManager.getLogger(WallpaperCalculator.class);
-
-    private ConfigurationProperties configurationProperties;
+    private final ConfigurationProperties configurationProperties;
 
     @Autowired
     WallpaperCalculator(ConfigurationProperties configurationProperties) {
         this.configurationProperties = configurationProperties;
-    }
-
-    @PostConstruct
-    public void init() {
-        Long wallpaperNeeded = calculateWallpaperNeeded();
-        logger.info(String.format("Number of total square feet of wallpaper: %s", wallpaperNeeded));
-
-        List<Room> rooms = listCubicShapedRoomsOrderedByWallpaperNeededDesc();
-        logger.info(String.format("All rooms from input that have a cubic shape (order by total needed wallpaper descending): %s", rooms));
-
-        List<Room> roomsAppearingMoreThenOnce = listRoomsAppearingMoreThenOnce();
-        logger.info(String.format("Rooms from input that are appearing more than once (order is irrelevant): %s", roomsAppearingMoreThenOnce));
     }
 
     private List<Room> readRoomsFromFile() {
@@ -59,9 +46,8 @@ public class WallpaperCalculator {
                 );
                 result.add(room);
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
+            logger.error("Exception occured during reading rooms from input file", e);
             throw new RuntimeException(e);
         }
         return result;
@@ -92,6 +78,6 @@ public class WallpaperCalculator {
     public List<Room> listRoomsAppearingMoreThenOnce() {
         List<Room> rooms = readRoomsFromFile();
         Map<Room, Long> roomsToOccuranceMapping = rooms.stream().collect(Collectors.groupingBy(room -> room, Collectors.counting()));
-        return roomsToOccuranceMapping.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey()).collect(Collectors.toList());
+        return roomsToOccuranceMapping.entrySet().stream().filter(entry -> entry.getValue() > 1).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 }
