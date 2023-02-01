@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 public class WallpaperCalculator {
     private static final Logger logger = LogManager.getLogger(WallpaperCalculator.class);
 
+    private static final String DIMENSION_SEPARATOR = "x";
+
     private final ConfigurationProperties configurationProperties;
 
     @Autowired
@@ -36,7 +38,7 @@ public class WallpaperCalculator {
             Resource resource = new ClassPathResource(configurationProperties.getInputFileName());
             Scanner scanner = new Scanner(resource.getFile());
             while (scanner.hasNext()) {
-                String[] roomDatas = scanner.next().split("x");
+                String[] roomDatas = scanner.next().split(DIMENSION_SEPARATOR);
                 Room room = new Room(
                         Integer.valueOf(roomDatas[0]),
                         Integer.valueOf(roomDatas[1]),
@@ -44,7 +46,7 @@ public class WallpaperCalculator {
                 );
                 result.add(room);
             }
-        } catch (IOException e) {
+        } catch (IndexOutOfBoundsException | IOException e) {
             logger.error("Exception occured during reading rooms from input file", e);
             throw new RuntimeException(e);
         }
