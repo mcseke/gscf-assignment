@@ -1,14 +1,10 @@
 package com.gscf.assignment;
 
 import com.gscf.assignment.components.WallpaperCalculator;
-import com.gscf.assignment.config.ConfigurationProperties;
 import com.gscf.assignment.model.Room;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -16,17 +12,9 @@ import java.util.List;
 @SpringBootTest
 class AssignmentApplicationTests {
 
-	@Mock
-	private ConfigurationProperties configurationProperties;
-
-	@InjectMocks
+	@Autowired
 	private WallpaperCalculator wallpaperCalculator;
 
-
-	@BeforeEach
-	void initMocks() {
-		Mockito.when(configurationProperties.getInputFileName()).thenReturn("/sample-input-test.txt");
-	}
 
 	@Test
 	void testWallpaperNeeded() {
