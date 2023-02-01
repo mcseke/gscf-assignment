@@ -1,6 +1,5 @@
 package com.gscf.assignment.components;
 
-import com.gscf.assignment.AssignmentApplication;
 import com.gscf.assignment.config.ConfigurationProperties;
 import com.gscf.assignment.model.Room;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
